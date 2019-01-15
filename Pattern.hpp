@@ -15,7 +15,8 @@ public:
 		rpent,
 		croc,
 		fountain,
-		copperhead
+		copperhead,
+		mypattern
 	};
 };
 
