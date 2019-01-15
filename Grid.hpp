@@ -1,11 +1,9 @@
 #pragma once 
 #include "Pattern.hpp"
 #include "Cell.hpp"
-//using namespace sf;
 
 class Grid
 {
-
 private:
 	int width;
 	int height; 
@@ -24,6 +22,4 @@ public:
 	void randomize();
 	void setVisited(bool visited, int x , int y );
 	void spawn(int number, int x_, int y_);
-	//void setRes(int w, int h);
-
 };

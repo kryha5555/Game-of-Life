@@ -20,6 +20,7 @@ private:
 	bool randomStart;
 	bool state;
 	bool trace;
+	char action;
 	Image icon;
 	RenderWindow window;
 	Event event;

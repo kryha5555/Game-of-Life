@@ -12,28 +12,21 @@ Game::Game()
 {
 	srand(time(0));
 	icon.loadFromFile("icon.png");
-
 }
-
 
 void Game::Run()
 {
-	
 	window.create(VideoMode(windowWidth, windowHeight, 32), "Game of Life - creating", Style::Close);
 	window.setIcon(44, 44, icon.getPixelsPtr());
-	//window.setVerticalSyncEnabled(true); //automatyczne
-	window.setFramerateLimit(fps); // rêczne
+	window.setFramerateLimit(fps);
 	window.requestFocus();
 	FreeConsole();
 	grid.create(windowWidth, windowHeight, cellSize, randomStart, trace);
 	running = true;
 }
 
-
 void Game::Recreate()
 {
-	char action;
-
 	do
 	{
 		cout << endl << "Wymiary okna musza byc podzielne przez rozmiar komorki!" << endl;
@@ -46,7 +39,6 @@ void Game::Recreate()
 
 	} while (windowWidth%cellSize != 0 && windowHeight%cellSize != 0);
 
-	//grid.setRes(windowWidth, windowHeight);
 	cout << "Podaj liczbe klatek na sekunde: ";
 	cin >> fps;
 
@@ -65,9 +57,6 @@ void Game::Recreate()
 	if (action == 'Y' || action == 'y')
 		trace = true;
 	else trace = false;
-
-	
-
 }
 
 void Game::Update()
@@ -91,39 +80,40 @@ void Game::Update()
 				case Keyboard::Escape: // zamkniecie okna esc
 					window.close();
 					break;
+
 				case Keyboard::Return: // zmiana stanu
 				case Keyboard::Space:
 					state = !state;
 					break;
+
 				case Keyboard::Add: // +5 fps
+				case Keyboard::Up:
 					fps += 5;
 					fps > 60 ? fps = 60 : fps;
 					window.setFramerateLimit(fps);
 					break;
+
 				case Keyboard::Subtract: // -5 fps
+				case Keyboard::Down:
 					fps -= 5;
 					fps < 1 ? fps = 1 : fps;
 					window.setFramerateLimit(fps);
 					break;
+
 				case Keyboard::Multiply: // +1 fps
+				case Keyboard::Right:
 					fps += 1;
 					fps > 60 ? fps = 60 : fps;
 					window.setFramerateLimit(fps);
 					break;
+
 				case Keyboard::Divide: // -1 fps
+				case Keyboard::Left:
 					fps -= 1;
 					fps < 1 ? fps = 1 : fps;
 					window.setFramerateLimit(fps);
 					break;
-					//	case Keyboard::E: // czyszczenie pojedynczej kratki
-					//		if (state == MODIFYING)
-					//		{
-					//			int x = Mouse::getPosition(window).x / cellSize;
-					//			int y = Mouse::getPosition(window).y / cellSize;
-					//			grid.setCell(false, x, y);
-					//			grid.setVisited(false, x, y);
-					//		}
-					//		break;
+
 				case Keyboard::C: // czyszczenie calej planszy
 					if (state == MODIFYING)
 						for (int x = 0; x < windowWidth / cellSize; x++)
@@ -133,6 +123,7 @@ void Game::Update()
 								grid.setVisited(false, x, y);
 							}
 					break;
+
 				case Keyboard::R: // losowanie pol
 					if (state == MODIFYING)
 						grid.randomize();
@@ -142,39 +133,50 @@ void Game::Update()
 					if (state == MODIFYING)
 						grid.spawn(Pattern::glider, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F2: // blinker
 					if (state == MODIFYING)
 						grid.spawn(Pattern::blinker, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F3: // dakota
 					if (state == MODIFYING)
 						grid.spawn(Pattern::dakota, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F4: // gosper
 					if (state == MODIFYING)
 						grid.spawn(Pattern::gosper, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F5: // rpentomino
 					if (state == MODIFYING)
 						grid.spawn(Pattern::rpent, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F6: // krokodyl
 					if (state == MODIFYING)
 						grid.spawn(Pattern::croc, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F7: // fontanna
 					if (state == MODIFYING)
 						grid.spawn(Pattern::fountain, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
+
 				case Keyboard::F8: // copperhead
 					if (state == MODIFYING)
 						grid.spawn(Pattern::copperhead, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
+					break;
+
+				case Keyboard::F9: // mypattern
+					if (state == MODIFYING)
+						grid.spawn(Pattern::mypattern, (Mouse::getPosition(window).x / cellSize), (Mouse::getPosition(window).y / cellSize));
 					break;
 				default:
 					break;
 				}
 			}
-
 
 			if (event.type == Event::MouseButtonPressed && state == MODIFYING)
 				if (event.mouseButton.button == Mouse::Left) // zmiana stanu na przeciwny
@@ -195,21 +197,14 @@ void Game::Update()
 					grid.setVisited(false, x, y);
 				}
 
-
-
-
-
 			if (event.type == Event::MouseMoved && state == MODIFYING) // ciagla zmiana LPM
 				if (Mouse::isButtonPressed(Mouse::Left))
 				{
-
-
 					int x = Mouse::getPosition(window).x / cellSize;
 					int y = Mouse::getPosition(window).y / cellSize;
 
 					if (x >= 0 && y >= 0 && x <= windowWidth / cellSize - 1 && y <= windowHeight / cellSize - 1)
 						grid.setCell(!grid.isCellAlive(x, y), x, y);
-
 				}
 		}
 
@@ -219,12 +214,8 @@ void Game::Update()
 		window.clear(Color::White);
 		grid.draw(window);
 		window.display();
-
 	}
-
 	running = false;
-
-
 }
 
 bool Game::isRunning()

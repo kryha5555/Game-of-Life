@@ -4,11 +4,10 @@ using namespace sf;
 
 void Grid::create(int width_, int height_, int size, bool randomStart, bool trace_)
 {
-	this->sizeOfCell = size;
-	this->trace = trace_;
-
-	this->width = width_ / sizeOfCell;
-	this->height = height_ / sizeOfCell;
+	sizeOfCell = size;
+	trace = trace_;
+	width = width_ / sizeOfCell;
+	height = height_ / sizeOfCell;
 
 	cells = new Cell*[width];
 
@@ -17,17 +16,12 @@ void Grid::create(int width_, int height_, int size, bool randomStart, bool trac
 		cells[x] = new Cell[height];
 		for (int y = 0; y < height; y++)
 		{
-			cells[x][y] = Cell(x * sizeOfCell, y * sizeOfCell, false, sizeOfCell, trace, false);
+			cells[x][y] = Cell(x * sizeOfCell, y * sizeOfCell, false, sizeOfCell, trace);
 		}
 	}
-
 	if (randomStart)
 		randomize();
-
-
 }
-
-
 
 Grid::~Grid()
 {
@@ -41,7 +35,6 @@ void Grid::setCell(bool alive, int x, int y)
 	cells[x][y].setAlive(alive);
 	if (alive)
 		cells[x][y].setVisited(true);
-
 }
 
 bool Grid::isCellAlive(int x, int y)
@@ -51,7 +44,6 @@ bool Grid::isCellAlive(int x, int y)
 
 void Grid::update()
 {
-	
 	bool **cellsToDie = new bool*[width];
 	bool **cellsToBorn = new bool*[width];
 
@@ -67,7 +59,6 @@ void Grid::update()
 		{
 			cellsToDie[x][y] = false;
 			cellsToBorn[x][y] = false;
-
 		}
 	}
 
@@ -101,8 +92,6 @@ void Grid::update()
 				if (near == 3)
 					cellsToBorn[x][y] = true;
 			}
-
-
 		}
 	}
 
@@ -111,50 +100,35 @@ void Grid::update()
 		for (int y = 0; y < height; y++)
 		{
 			if (cellsToDie[x][y])
-			{
 				cells[x][y].setAlive(false);
-				//cells[x][y].setVisited(true);
-			}
 
 			if (cellsToBorn[x][y])
-			{
 				cells[x][y].setAlive(true);
-				//cells[x][y].setVisited(true);
-			}
-
 		}
 	}
-
 
 	for (int x = 0; x < width; x++)
 	{
 		delete[] cellsToBorn[x];
 		delete[] cellsToDie[x];
 	}
+
 	delete[] cellsToBorn;
 	delete[] cellsToDie;
-
-
-
-
 }
 
 void Grid::draw(RenderWindow &window)
 {
 	for (int x = 0; x < width; x++)
-	{
 		for (int y = 0; y < height; y++)
-		{
 			cells[x][y].draw(window);
-		}
-	}
 }
 
 void Grid::randomize()
 {
 	for (int x = 0; x < width; x++)
 		for (int y = 0; y < height; y++)
-			cells[x][y] = Cell(x * sizeOfCell, y * sizeOfCell, !bool(rand()%3), sizeOfCell, trace, false);
+			cells[x][y] = Cell(x * sizeOfCell, y * sizeOfCell, !bool(rand() % 3), sizeOfCell, trace);
 
 }
 
@@ -169,14 +143,9 @@ void Grid::spawn(int number, int x_, int y_)
 	{
 		for (int y = 0; y < pattern.seed[number][x].size(); y++)
 		{
-		//	bool visitedBefore = cells[(x_ + y + width) % width][(y_ + x + height) % height].isVisited();
-				cells[(x_ + y + width) % width][(y_ + x + height) % height].setAlive(pattern.seed[number][x][y]);
-				if (cells[(x_ + y + width) % width][(y_ + x + height) % height].isAlive())
-					cells[(x_ + y + width) % width][(y_ + x + height) % height].setVisited(true);
-
-				//cells[(x_ + y + width) % width][(y_ + x + height) % height].setVisited(visitedBefore);
-			
-
+			cells[(x_ + y + width) % width][(y_ + x + height) % height].setAlive(pattern.seed[number][x][y]);
+			if (cells[(x_ + y + width) % width][(y_ + x + height) % height].isAlive())
+				cells[(x_ + y + width) % width][(y_ + x + height) % height].setVisited(true);
 		}
 	}
 }
